@@ -1,5 +1,5 @@
-sourcebuild_simple "wget" do
-  version    "1.14"
-  source_url "http://ftp.gnu.org/gnu/wget/wget-1.14.tar.gz"
-  creates    "/usr/local/bin/wget"
+sourcebuild_simple "nginx" do
+  version    "1.3.9"
+  source_url "http://nginx.org/download/nginx-1.3.9.tar.gz"
+  creates    "/usr/local/sbin/nginx"
 end
