@@ -1,3 +1,5 @@
+require 'fileutils'
+
 def file_ext(filename)
   filename.scan(/\.(zip|tar|gz|xz|bz2)/).join('.')
 end
@@ -44,27 +46,28 @@ def unpack_sources(archive)
                       "tar xjf"
                     end
 
-  Chef::Log.fatal("Cannot determine extract command for extension #{f_ext}") unless extract_command
+  unless extract_command
+    Chef::Log.fatal("Cannot determine extract command for extension #{f_ext}")
+    raise
+  end
 
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : extract_command = #{extract_command}")
 
-  directory "#{Chef::Config[:file_cache_path]}/sourcebuild"
+  FileUtils.mkdir_p "#{Chef::Config[:file_cache_path]}/sourcebuild"
 
   tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`.chomp
-
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : tmpdir = #{tmpdir}")
-  Chef::Log.debug("// sourcebuild_simple > unpack_sources : tmpdir class = #{tmpdir.class}")
 
-  execute "cp #{archive} #{tmpdir}/"
+  FileUtils.cp #{archive} #{tmpdir}
 
-  execute "Unpack #{archive}" do
-    cwd     tmpdir
-    command "#{extract_command} #{archive}"
+  system "cd #{tmpdir}; #{extract_command} #{archive}"
+
+  unless $?.exitstatus == 0
+    Chef::Log.fatal("Extract command failed")
+    raise
   end
 
-  file "#{tmpdir}/#{::File.basename archive}" do
-    action :delete
-  end
+  FileUtils.rm "#{tmpdir}/#{::File.basename archive}"
 
   srcdir = nil
 
@@ -78,7 +81,10 @@ def unpack_sources(archive)
 
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : source dir detected = #{srcdir}")
 
-  Chef::Log.fatal("Cannot determine source directory, listing: #{::Dir.entries tmpdir}") unless srcdir
+  unless srcdir
+    Chef::Log.fatal("Cannot determine source directory, listing: #{::Dir.entries tmpdir}")
+    raise
+  end
 
   srcdir
 end
