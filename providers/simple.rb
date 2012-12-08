@@ -38,7 +38,7 @@ def unpack_sources(archive)
 
   directory "#{Chef::Config[:file_cache_path]}/sourcebuild"
 
-  tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`
+  tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`.chomp
 
   execute "cp #{archive} #{tmpdir}/"
 
