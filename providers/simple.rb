@@ -36,6 +36,8 @@ def unpack_sources(archive)
                       "tar xjf"
                     end
 
+  directory "#{Chef::Config[:file_cache_path]}/sourcebuild"
+
   tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`
 
   execute "cp #{archive} #{tmpdir}/"
