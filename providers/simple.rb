@@ -38,6 +38,8 @@ def unpack_sources(archive)
                       "tar xjf"
                     end
 
+  # TODO: raise if no suitable archiver found
+
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : extract_command = #{extract_command}")
 
   directory "#{Chef::Config[:file_cache_path]}/sourcebuild"
@@ -45,6 +47,7 @@ def unpack_sources(archive)
   tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`.chomp
 
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : tmpdir = #{tmpdir}")
+  Chef::Log.debug("// sourcebuild_simple > unpack_sources : tmpdir class = #{tmpdir.class}")
 
   execute "cp #{archive} #{tmpdir}/"
 
