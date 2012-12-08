@@ -10,6 +10,8 @@ def get_sources(src_url, name, version)
 
   f_ext = file_ext( ::File.basename(src_url) )
 
+  Chef::Log.debug("// sourcebuild_simple > get_sources : f_ext = #{f_ext}")
+
   remote_file src_url do
     path   "#{Chef::Config[:file_cache_path]}/sourcebuild/#{name}/#{name}-#{version}.#{f_ext}"
     source src_url
@@ -36,9 +38,13 @@ def unpack_sources(archive)
                       "tar xjf"
                     end
 
+  Chef::Log.debug("// sourcebuild_simple > unpack_sources : extract_command = #{extract_command}")
+
   directory "#{Chef::Config[:file_cache_path]}/sourcebuild"
 
   tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`.chomp
+
+  Chef::Log.debug("// sourcebuild_simple > unpack_sources : tmpdir = #{tmpdir}")
 
   execute "cp #{archive} #{tmpdir}/"
 
@@ -54,6 +60,8 @@ def unpack_sources(archive)
   srcdir = ::Dir.glob("#{tmpdir}/*").each do |f|
     break f if ::File.directory? f
   end
+
+  Chef::Log.debug("// sourcebuild_simple > unpack_sources : source dir detected = #{srcdir}")
 
   srcdir
 end
