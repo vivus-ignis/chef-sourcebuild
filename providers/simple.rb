@@ -44,7 +44,7 @@ def unpack_sources(archive)
                       "tar xjf"
                     end
 
-  # TODO: raise if no suitable archiver found
+  Chef::Log.fatal("Cannot determine extract command for extension #{f_ext}") unless extract_command
 
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : extract_command = #{extract_command}")
 
@@ -72,6 +72,8 @@ def unpack_sources(archive)
   end
 
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : source dir detected = #{srcdir}")
+
+  Chef::Log.fatal("Cannot determine source directory, listing: #{::Dir.entries tmpdir}") unless srcdir
 
   srcdir
 end
