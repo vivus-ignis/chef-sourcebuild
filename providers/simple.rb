@@ -66,9 +66,12 @@ def unpack_sources(archive)
     action :delete
   end
 
-  srcdir = ::Dir.glob("#{tmpdir}/*").each do |f|
+  ::Dir.glob("#{tmpdir}/*").each do |f|
     Chef::Log.debug("// sourcebuild_simple > unpack_sources : glob block : f = #{f}")
-    break f if ::File.directory? f
+    if ::File.directory? f
+      srcdir = f
+      break
+    end
   end
 
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : source dir detected = #{srcdir}")
