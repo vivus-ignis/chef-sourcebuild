@@ -27,6 +27,8 @@ end
 # we do not know how the directory in a source archive named,
 # so let's guess by unpacking in empty directory and using glob
 def unpack_sources(archive)
+  Chef::Log.debug("// sourcebuild_simple > unpack_sources : archive = #{archive}")
+
   f_ext = file_ext archive
 
   extract_command = case f_ext
@@ -61,6 +63,7 @@ def unpack_sources(archive)
   end
 
   srcdir = ::Dir.glob("#{tmpdir}/*").each do |f|
+    Chef::Log.debug("// sourcebuild_simple > unpack_sources : glob block : f = #{f}")
     break f if ::File.directory? f
   end
 
@@ -70,6 +73,9 @@ def unpack_sources(archive)
 end
 
 def compile_sources(dir, install_prefix)
+  Chef::Log.debug("// sourcebuild_simple > compile_sources : dir            = #{dir}")
+  Chef::Log.debug("// sourcebuild_simple > compile_sources : install_prefix = #{install_prefix}")
+
   execute "./configure --prefix=#{install_prefix}" do
     cwd dir
     not_if { ::File.exists? "#{dir}/Makefile" }
