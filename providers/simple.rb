@@ -4,6 +4,10 @@ end
 
 def get_sources(src_url, name, version)
 
+  Chef::Log.debug("// sourcebuild_simple > get_sources : src_url = #{src_url}")
+  Chef::Log.debug("// sourcebuild_simple > get_sources : name    = #{name}")
+  Chef::Log.debug("// sourcebuild_simple > get_sources : version = #{version}")
+
   directory "#{Chef::Config[:file_cache_path]}/sourcebuild/#{name}" do
     recursive true
   end
