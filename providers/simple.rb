@@ -58,7 +58,7 @@ def unpack_sources(archive)
   tmpdir = `mktemp -d #{Chef::Config[:file_cache_path]}/sourcebuild/src.XXXXXX`.chomp
   Chef::Log.debug("// sourcebuild_simple > unpack_sources : tmpdir = #{tmpdir}")
 
-  FileUtils.cp(#{archive}, #{tmpdir})
+  FileUtils.cp(archive, tmpdir)
 
   system "cd #{tmpdir}; #{extract_command} #{archive}"
 
